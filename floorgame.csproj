@@ -83,6 +83,9 @@
       <DependentUpon>DebugWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="DepthInput.cs" />
+    <Compile Include="ScreenParameters.cs" />
+    <Compile Include="SkeletonOverlay.cs" />
+    <Compile Include="TrackUserPosition.cs" />
     <Compile Include="Util.cs" />
     <Page Include="DebugWindow.xaml">
       <SubType>Designer</SubType>
@@ -102,7 +105,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PartialCalibrationClass.cs" />
+    <Compile Include="CalibrationClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

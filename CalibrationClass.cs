@@ -8,7 +8,7 @@ using System.Windows.Media.Media3D;
 
 namespace Microsoft.Samples.Kinect.ControlsBasics
 {
-    class PartialCalibrationClass
+    class CalibrationClass
     {
         private KinectSensor m_kinectSensor = null;
         
@@ -18,24 +18,18 @@ namespace Microsoft.Samples.Kinect.ControlsBasics
         private Matrix3D m_groundPlaneTransform; //step 2 transform
         private Emgu.CV.Matrix<double> m_transform; //step 3 transform
 
-        public PartialCalibrationClass()
+        public CalibrationClass(KinectSensor kinectSensor)
         {
-
+            m_kinectSensor = kinectSensor;
         }
 
-        public void SetKinectSensor(KinectSensor sensor)
+        public void SetSkeletonCalibPointAtIndex(SkeletonPoint position, int index) 
         {
-            m_kinectSensor = sensor;
-        }
-
-        public void AddCalibrationPoint(Point point)
-        {
-            m_calibPoints.Add(point);
-        }
-
-        public void AddSkeletonCalibrationPoint(SkeletonPoint point)
-        {
-            m_skeletonCalibPoints.Add(point);
+            if (index >= 4)
+            {
+                throw new ArgumentOutOfRangeException("index of skeletonCalibPoints ");
+            }
+            m_skeletonCalibPoints.Insert(index, position);
         }
 
         public void calibrate()
@@ -93,7 +87,7 @@ namespace Microsoft.Samples.Kinect.ControlsBasics
             }
         }
 
-        private Point3D convertSkeletonPointToDepthPoint(SkeletonPoint skeletonPoint)
+        public Point3D convertSkeletonPointToDepthPoint(SkeletonPoint skeletonPoint)
         {
             DepthImagePoint imgPt = m_kinectSensor.CoordinateMapper.MapSkeletonPointToDepthPoint(skeletonPoint, DepthImageFormat.Resolution640x480Fps30);
 
