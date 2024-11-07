@@ -6,14 +6,12 @@ using System.Text;
 using System.Windows;
 using System.Windows.Media.Media3D;
 
-//shared with students
-
 namespace Microsoft.Samples.Kinect.ControlsBasics
 {
     class PartialCalibrationClass
     {
         private KinectSensor m_kinectSensor = null;
-
+        
         private List<Point> m_calibPoints = new List<Point>(); //2d calibration points
         private List<SkeletonPoint> m_skeletonCalibPoints = new List<SkeletonPoint>(); //3d skeleton points
 
@@ -25,7 +23,22 @@ namespace Microsoft.Samples.Kinect.ControlsBasics
 
         }
 
-        private void calibrate()
+        public void SetKinectSensor(KinectSensor sensor)
+        {
+            m_kinectSensor = sensor;
+        }
+
+        public void AddCalibrationPoint(Point point)
+        {
+            m_calibPoints.Add(point);
+        }
+
+        public void AddSkeletonCalibrationPoint(SkeletonPoint point)
+        {
+            m_skeletonCalibPoints.Add(point);
+        }
+
+        public void calibrate()
         {
             if (m_skeletonCalibPoints.Count == m_calibPoints.Count)
             {

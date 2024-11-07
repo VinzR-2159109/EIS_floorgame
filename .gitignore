@@ -1,0 +1,96 @@
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+
+# NuGet packages
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# StyleCop
+StyleCopReport.xml
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Mono Auto Generated Files
+mono_crash.*
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# VS Code directories
+.vscode/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Web files
+*.publishsettings
+.publish/
+
+# Visual Studio working files
+.vs/
+.vscode/
+
+# Rider files
+.idea/
+*.sln.iml
+
+# Mac files
+.DS_Store
+
+# Logs
+*.log
+*.tlog
+*.log**
+
+# VS Code .NET extensions
+.vscode/extensions.json
+.vscode/launch.json
+
+# Entity Framework
+migrations/
+
+# SQL Server
+*.mdf
+*.ldf
+*.ndf
+
+# Application Insights
+ApplicationInsights.config
+ApplicationInsightsTelemetry.config
+
+# IIS
+*.vspscc
+*.vspcc
+
+# Local History for Visual Studio
+.vs/
