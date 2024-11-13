@@ -22,8 +22,6 @@
                 <Image x:Name="DepthImage" Height="240" Width="320" />
             </StackPanel>
         </StackPanel>
-        <Canvas x:Name="UserPositionCanvas" Background="Transparent"/>
-
     </Grid>
 
 </Window>

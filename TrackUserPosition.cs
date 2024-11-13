@@ -1,7 +1,6 @@
 ﻿using Microsoft.Kinect;
 using Microsoft.Samples.Kinect.ControlsBasics;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media.Media3D;
@@ -11,24 +10,19 @@ namespace floorgame
     public class TrackUserPosition
     {
         private KinectSensor kinectSensor;
-        private CalibrationClass calibrationClass;
-
-        // Store the smoothed user position
-        private Queue<Point> positionHistory = new Queue<Point>();
-        private const int historySize = 5; // Number of samples to average
-        private const double movementThreshold = 15; // Movement threshold to reduce flickering
-
-        private SkeletonPoint lastSkeletonPositon;
+        private SkeletonPoint lastSkeletonPosition;
+        private SkeletonPoint smoothedSkeletonPosition;
+        private Point last2DPosition;
+        private const float MovementThreshold = 0.05f; // Threshold for detecting actual movement (adjust as needed)
+        private const float SmoothingFactor = 0.2f; // Factor for smoothing the position (0.0 to 1.0)
 
         public event Action<Skeleton> SkeletonUpdated;
-        public event Action<Point> UserPositionUpdated;
+        public event Action<SkeletonPoint> SkeletonPositionUpdated;
 
         public TrackUserPosition(KinectSensor sensor)
         {
             kinectSensor = sensor;
-            calibrationClass = new CalibrationClass(sensor);
 
-            // Enable skeleton tracking
             if (kinectSensor != null)
             {
                 kinectSensor.SkeletonStream.Enable();
@@ -45,86 +39,46 @@ namespace floorgame
                 Skeleton[] skeletons = new Skeleton[skeletonFrame.SkeletonArrayLength];
                 skeletonFrame.CopySkeletonDataTo(skeletons);
 
-                // Find the first tracked skeleton
                 Skeleton trackedSkeleton = Array.Find(skeletons, s => s.TrackingState == SkeletonTrackingState.Tracked);
                 if (trackedSkeleton != null)
                 {
-                    // Trigger event with the full skeleton data
                     SkeletonUpdated?.Invoke(trackedSkeleton);
-                    lastSkeletonPositon = trackedSkeleton.Position;
 
-                    // Map the position of the center joint (HipCenter) to screen coordinates
-                    Point userScreenPosition = MapSkeletonToScreen(trackedSkeleton);
-
-                    // Update user position if it's valid
-                    if (userScreenPosition != default)
+                    if (IsMovementSignificant(trackedSkeleton.Position))
                     {
-                        UpdateUserPosition(userScreenPosition);
+                        smoothedSkeletonPosition = SmoothPosition(trackedSkeleton.Position);
+                        lastSkeletonPosition = smoothedSkeletonPosition;
+                        SkeletonPositionUpdated?.Invoke(smoothedSkeletonPosition);
                     }
                 }
             }
         }
 
-        public Point MapSkeletonToScreen(Skeleton skeleton)
+        private bool IsMovementSignificant(SkeletonPoint currentPosition)
         {
-            Joint body = skeleton.Joints[JointType.HipCenter];
-            if (body.TrackingState == JointTrackingState.Tracked)
-            {
-                // Map the body joint to depth point
-                Point3D depthPoint = calibrationClass.convertSkeletonPointToDepthPoint(skeleton.Position);
+            // Calculate the distance between the current position and the last position
+            float distance = (float)Math.Sqrt(
+                Math.Pow(currentPosition.X - lastSkeletonPosition.X, 2) +
+                Math.Pow(currentPosition.Y - lastSkeletonPosition.Y, 2) +
+                Math.Pow(currentPosition.Z - lastSkeletonPosition.Z, 2)
+            );
 
-                if (ScreenParameters.ScreenHeight > 0 && ScreenParameters.ScreenWidth > 0)
-                {
-                    double screenY = (depthPoint.Y / 480.0) * ScreenParameters.ScreenHeight;
-                    double screenX = (depthPoint.X / 640.0) * ScreenParameters.ScreenWidth;
-
-                    return new Point(screenX, screenY);
-                }
-            }
-
-            return new Point(0, 0); // Return default point if body is not tracked
+            return distance >= MovementThreshold;
         }
 
-        private Point SmoothPosition(Point newPosition)
+        private SkeletonPoint SmoothPosition(SkeletonPoint currentPosition)
         {
-            if (positionHistory.Count >= historySize)
-            {
-                positionHistory.Dequeue(); // Remove the oldest position
-            }
+            // Smooth the position by averaging the previous smoothed position with the current position
+            smoothedSkeletonPosition.X = smoothedSkeletonPosition.X + SmoothingFactor * (currentPosition.X - smoothedSkeletonPosition.X);
+            smoothedSkeletonPosition.Y = smoothedSkeletonPosition.Y + SmoothingFactor * (currentPosition.Y - smoothedSkeletonPosition.Y);
+            smoothedSkeletonPosition.Z = smoothedSkeletonPosition.Z + SmoothingFactor * (currentPosition.Z - smoothedSkeletonPosition.Z);
 
-            positionHistory.Enqueue(newPosition); // Add the new position
-
-            // Calculate the average position
-            double avgX = positionHistory.Average(p => p.X);
-            double avgY = positionHistory.Average(p => p.Y);
-
-            return new Point(avgX, avgY);
-        }
-
-        public void UpdateUserPosition(Point userPosition)
-        {
-            // Check if the movement exceeds the threshold
-            if (positionHistory.Count > 0)
-            {
-                Point currentMarkerPosition = SmoothPosition(positionHistory.Last());
-
-                if (Math.Abs(userPosition.X - currentMarkerPosition.X) < movementThreshold &&
-                    Math.Abs(userPosition.Y - currentMarkerPosition.Y) < movementThreshold)
-                {
-                    return; // Ignore small movements
-                }
-            }
-
-            // Smooth the user position
-            Point smoothedPosition = SmoothPosition(userPosition);
-
-            // Trigger the user position update event
-            UserPositionUpdated?.Invoke(smoothedPosition);
+            return smoothedSkeletonPosition;
         }
 
         public SkeletonPoint GetLastSkeletonPosition()
         {
-            return lastSkeletonPositon;
+            return smoothedSkeletonPosition;
         }
 
         public void StopTracking()

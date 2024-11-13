@@ -1,6 +1,7 @@
 ﻿using Microsoft.Kinect;
 using Microsoft.Samples.Kinect.ControlsBasics;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,6 +17,10 @@ namespace floorgame
         private DebugWindow debugWindow;
         private TrackUserPosition userTracker;
         private CalibrationClass calibration;
+        private List<Ellipse> userMarkers = new List<Ellipse>();
+        private Point currentCalebPoint;
+        private bool isCalibrated = false;
+
 
         // Enum for better state management
         private enum CalibrationState
@@ -24,6 +29,7 @@ namespace floorgame
             TopRight,
             BottomRight,
             BottomLeft,
+            Calibrate,
             StartGame
         }
 
@@ -37,6 +43,7 @@ namespace floorgame
             KeyDown += MainWindow_KeyDown;
         }
 
+
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             kinectSensor = KinectSensor.KinectSensors.FirstOrDefault(sensor => sensor.Status == KinectStatus.Connected);
@@ -46,6 +53,7 @@ namespace floorgame
                 {
                     kinectSensor.Start();
                     userTracker = new TrackUserPosition(kinectSensor);
+                    userTracker.SkeletonPositionUpdated += UpdateUserPosition;
                     calibration = new CalibrationClass(kinectSensor);
                     StateMachine();
                 }
@@ -67,27 +75,69 @@ namespace floorgame
             {
                 case CalibrationState.TopLeft:
                     UpdateWindowTitle("Stand at the top left corner");
-                    DrawCircle(0, 0); // Position for top left corner
+                    currentCalebPoint = new Point(0, 0);
+                    DrawCircle();
                     break;
                 case CalibrationState.TopRight:
                     UpdateWindowTitle("Stand at the top right corner");
-                    DrawCircle(PlayingAreaCanvas.Width, 0); // Position for top right corner
+                    currentCalebPoint = new Point(PlayingAreaCanvas.Width, 0);
+                    DrawCircle();
                     break;
                 case CalibrationState.BottomRight:
                     UpdateWindowTitle("Stand at the bottom right corner");
-                    DrawCircle(PlayingAreaCanvas.Width, PlayingAreaCanvas.Height); // Position for bottom right corner
+                    currentCalebPoint = new Point(PlayingAreaCanvas.Width, PlayingAreaCanvas.Height);
+                    DrawCircle();
                     break;
                 case CalibrationState.BottomLeft:
                     UpdateWindowTitle("Stand at the bottom left corner");
-                    DrawCircle(0, PlayingAreaCanvas.Height); // Position for the bottom left corner
+                    currentCalebPoint = new Point(0, PlayingAreaCanvas.Height);
+                    DrawCircle();
+                    break;
+                case CalibrationState.Calibrate:
+                    UpdateWindowTitle("Calibrating...");
+                    calibration.Calibrate();
+                    isCalibrated = true;
+                    TransitionToNextState();
                     break;
                 case CalibrationState.StartGame:
+                    UpdateWindowTitle("Starting the game!");
                     StartGame();
                     break;
             }
         }
 
-        private void DrawCircle(double x, double y)
+        private void UpdateUserPosition(SkeletonPoint trackedSkeleton)
+        {
+            if (trackedSkeleton != null && isCalibrated)
+            {
+                //Misschien datamember van maken
+                Point userPosition = calibration.kinectToProjectionPoint(trackedSkeleton);
+
+                if (userMarkers.Any())
+                {
+                    var lastUserMarker = userMarkers.Last();
+                    PlayingAreaCanvas.Children.Remove(lastUserMarker);
+                    userMarkers.Remove(lastUserMarker);
+                }
+
+                Ellipse userMarker = new Ellipse
+                {
+                    Width = 20,
+                    Height = 20,
+                    Fill = Brushes.Red,
+                    Stroke = Brushes.Black
+                };
+
+                Canvas.SetLeft(userMarker, userPosition.X - userMarker.Width / 2);
+                Canvas.SetTop(userMarker, userPosition.Y - userMarker.Height / 2);
+
+                PlayingAreaCanvas.Children.Add(userMarker);
+
+                userMarkers.Add(userMarker);
+            } 
+        }
+
+        private void DrawCircle()
         {
             Ellipse circle = new Ellipse
             {
@@ -95,8 +145,8 @@ namespace floorgame
                 Height = 70,
                 Fill = Brushes.Yellow
             };
-            Canvas.SetLeft(circle, x - circle.Width / 2);
-            Canvas.SetTop(circle, y - circle.Height / 2);
+            Canvas.SetLeft(circle, currentCalebPoint.X - circle.Width / 2);
+            Canvas.SetTop(circle, currentCalebPoint.Y - circle.Height / 2);
             PlayingAreaCanvas.Children.Add(circle);
         }
 
@@ -113,13 +163,15 @@ namespace floorgame
 
         private void CaptureUserPosition()
         {
-            SkeletonPoint lastPosition = userTracker.GetLastSkeletonPosition();
-            if (lastPosition != null)
+            SkeletonPoint skeletonPoint = userTracker.GetLastSkeletonPosition();
+            if (skeletonPoint != null)
             {
                 try
                 {
-                    calibration.SetSkeletonCalibPointAtIndex(lastPosition, (int)currentState);
-                    Console.WriteLine($"Saved User Position: {lastPosition.X},{lastPosition.Y},{lastPosition.Z} at index: {(int)currentState}");
+                    calibration.SetCalibPointsAtIndex(skeletonPoint, currentCalebPoint, (int)currentState);
+
+
+                    Console.WriteLine($"Saved 3D User Position: {skeletonPoint.X},{skeletonPoint.Y},{skeletonPoint.Z} at index: {(int)currentState}");
                 }
                 catch (Exception e)
                 {
@@ -144,13 +196,16 @@ namespace floorgame
                     currentState = CalibrationState.BottomLeft;
                     break;
                 case CalibrationState.BottomLeft:
+                    currentState = CalibrationState.Calibrate;
+                    break;
+                case CalibrationState.Calibrate:
                     currentState = CalibrationState.StartGame;
                     break;
                 case CalibrationState.StartGame:
                     StartGame();
-                    return; // Exit to prevent calling NextState() again
+                    return;
             }
-            StateMachine(); // Call NextState to update UI
+            StateMachine(); 
         }
 
         private void OpenDebugWindow_Click(object sender, RoutedEventArgs e) => OpenDebugWindow();

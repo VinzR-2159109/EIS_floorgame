@@ -23,19 +23,23 @@ namespace Microsoft.Samples.Kinect.ControlsBasics
             m_kinectSensor = kinectSensor;
         }
 
-        public void SetSkeletonCalibPointAtIndex(SkeletonPoint position, int index) 
+        public void SetCalibPointsAtIndex(SkeletonPoint SkeletonPoint, Point Calibpoint , int index) 
         {
             if (index >= 4)
             {
                 throw new ArgumentOutOfRangeException("index of skeletonCalibPoints ");
             }
-            m_skeletonCalibPoints.Insert(index, position);
+            m_skeletonCalibPoints.Insert(index, SkeletonPoint);
+            m_calibPoints.Insert(index, Calibpoint);
         }
 
-        public void calibrate()
+        public void Calibrate()
         {
+            Console.WriteLine($"m_skeletonCalibPoints:: [0]:{m_skeletonCalibPoints[0].X}, {m_skeletonCalibPoints[0].Y}, {m_skeletonCalibPoints[0].Z} ... [3] {m_skeletonCalibPoints[3].X}, {m_skeletonCalibPoints[3].Y}, {m_skeletonCalibPoints[3].Z}");
+            Console.WriteLine($"m_calibPoints:: [0]: {m_calibPoints[0]} ... [3]: {m_calibPoints[3]}");
             if (m_skeletonCalibPoints.Count == m_calibPoints.Count)
             {
+                Console.WriteLine("Calibrating...");
                 //skeleton 3D positions --> 3d positions in depth camera
                 Point3D p0 = convertSkeletonPointToDepthPoint(m_skeletonCalibPoints[0]);
                 Point3D p1 = convertSkeletonPointToDepthPoint(m_skeletonCalibPoints[1]);
@@ -84,17 +88,23 @@ namespace Microsoft.Samples.Kinect.ControlsBasics
                 Point tResult1 = kinectToProjectionPoint(m_skeletonCalibPoints[1]);
                 Point tResult2 = kinectToProjectionPoint(m_skeletonCalibPoints[2]);
                 Point tResult3 = kinectToProjectionPoint(m_skeletonCalibPoints[3]);
+
+                Console.WriteLine($"0:{tResult0}; 1:{tResult1}; 2:{tResult2}; 3:{tResult3}");
+            }
+            else
+            {
+                throw new Exception("Calibration points not set");
             }
         }
 
-        public Point3D convertSkeletonPointToDepthPoint(SkeletonPoint skeletonPoint)
+        private Point3D convertSkeletonPointToDepthPoint(SkeletonPoint skeletonPoint)
         {
             DepthImagePoint imgPt = m_kinectSensor.CoordinateMapper.MapSkeletonPointToDepthPoint(skeletonPoint, DepthImageFormat.Resolution640x480Fps30);
 
             return new Point3D(imgPt.X, imgPt.Y, imgPt.Depth);
         }
 
-        private Point kinectToProjectionPoint(SkeletonPoint point)
+        public Point kinectToProjectionPoint(SkeletonPoint point)
         {
             DepthImagePoint depthP = m_kinectSensor.CoordinateMapper.MapSkeletonPointToDepthPoint(point, DepthImageFormat.Resolution640x480Fps30);
             Point3D p = new Point3D(depthP.X, depthP.Y, depthP.Depth);

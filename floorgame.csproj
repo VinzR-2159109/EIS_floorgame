@@ -83,7 +83,6 @@
       <DependentUpon>DebugWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="DepthInput.cs" />
-    <Compile Include="ScreenParameters.cs" />
     <Compile Include="SkeletonOverlay.cs" />
     <Compile Include="TrackUserPosition.cs" />
     <Compile Include="Util.cs" />
