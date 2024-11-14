@@ -85,6 +85,7 @@
     <Compile Include="DepthInput.cs" />
     <Compile Include="SkeletonOverlay.cs" />
     <Compile Include="TrackUserPosition.cs" />
+    <Compile Include="User.cs" />
     <Compile Include="Util.cs" />
     <Page Include="DebugWindow.xaml">
       <SubType>Designer</SubType>

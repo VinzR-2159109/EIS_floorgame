@@ -50,10 +50,8 @@ namespace floorgame
             {
                 if (colorFrame != null)
                 {
-                    // Copy the pixel data from the image frame to the colorPixels array
                     colorFrame.CopyPixelDataTo(colorPixels);
 
-                    // Write the pixel data into the bitmap
                     colorBitmap.WritePixels(
                         new Int32Rect(0, 0, colorBitmap.PixelWidth, colorBitmap.PixelHeight),
                         colorPixels,
@@ -65,7 +63,6 @@ namespace floorgame
 
         public void Stop()
         {
-            // Unsubscribe from the event handler to avoid memory leaks
             if (kinectSensor != null)
             {
                 kinectSensor.ColorFrameReady -= KinectSensor_ColorFrameReady;

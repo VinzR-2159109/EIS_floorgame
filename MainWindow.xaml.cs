@@ -17,12 +17,12 @@ namespace floorgame
         private DebugWindow debugWindow;
         private TrackUserPosition userTracker;
         private CalibrationClass calibration;
-        private List<Ellipse> userMarkers = new List<Ellipse>();
         private Point currentCalebPoint;
         private bool isCalibrated = false;
+        private Dictionary<int, User> users = new Dictionary<int, User>();
 
+        private static Brush[] availableColors = { Brushes.Red, Brushes.Green, Brushes.Blue, Brushes.Yellow, Brushes.Purple, Brushes.Orange };
 
-        // Enum for better state management
         private enum CalibrationState
         {
             TopLeft,
@@ -43,7 +43,6 @@ namespace floorgame
             KeyDown += MainWindow_KeyDown;
         }
 
-
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             kinectSensor = KinectSensor.KinectSensors.FirstOrDefault(sensor => sensor.Status == KinectStatus.Connected);
@@ -53,7 +52,7 @@ namespace floorgame
                 {
                     kinectSensor.Start();
                     userTracker = new TrackUserPosition(kinectSensor);
-                    userTracker.SkeletonPositionUpdated += UpdateUserPosition;
+                    userTracker.SkeletonUpdated += UpdateUserPosition;
                     calibration = new CalibrationClass(kinectSensor);
                     StateMachine();
                 }
@@ -65,6 +64,30 @@ namespace floorgame
             else
             {
                 MessageBox.Show("No Kinect sensor detected.");
+            }
+        }
+
+        private Brush GetUserColor(int trackingId)
+        {
+            int colorIndex = users.Count % availableColors.Length;
+            return availableColors[colorIndex];
+        }
+
+        private void UpdateUserPosition(Skeleton trackedSkeleton)
+        {
+            if (trackedSkeleton != null && isCalibrated)
+            {
+                int trackingId = trackedSkeleton.TrackingId;
+
+                if (!users.ContainsKey(trackingId))
+                {
+                    users[trackingId] = new User(trackingId, GetUserColor(trackingId));
+                }
+
+                User user = users[trackingId];
+                user.Position = calibration.kinectToProjectionPoint(trackedSkeleton.Position);
+
+                user.UpdateMarkerPosition(PlayingAreaCanvas);
             }
         }
 
@@ -106,37 +129,6 @@ namespace floorgame
             }
         }
 
-        private void UpdateUserPosition(SkeletonPoint trackedSkeleton)
-        {
-            if (trackedSkeleton != null && isCalibrated)
-            {
-                //Misschien datamember van maken
-                Point userPosition = calibration.kinectToProjectionPoint(trackedSkeleton);
-
-                if (userMarkers.Any())
-                {
-                    var lastUserMarker = userMarkers.Last();
-                    PlayingAreaCanvas.Children.Remove(lastUserMarker);
-                    userMarkers.Remove(lastUserMarker);
-                }
-
-                Ellipse userMarker = new Ellipse
-                {
-                    Width = 20,
-                    Height = 20,
-                    Fill = Brushes.Red,
-                    Stroke = Brushes.Black
-                };
-
-                Canvas.SetLeft(userMarker, userPosition.X - userMarker.Width / 2);
-                Canvas.SetTop(userMarker, userPosition.Y - userMarker.Height / 2);
-
-                PlayingAreaCanvas.Children.Add(userMarker);
-
-                userMarkers.Add(userMarker);
-            } 
-        }
-
         private void DrawCircle()
         {
             Ellipse circle = new Ellipse
@@ -169,8 +161,6 @@ namespace floorgame
                 try
                 {
                     calibration.SetCalibPointsAtIndex(skeletonPoint, currentCalebPoint, (int)currentState);
-
-
                     Console.WriteLine($"Saved 3D User Position: {skeletonPoint.X},{skeletonPoint.Y},{skeletonPoint.Z} at index: {(int)currentState}");
                 }
                 catch (Exception e)
@@ -205,7 +195,7 @@ namespace floorgame
                     StartGame();
                     return;
             }
-            StateMachine(); 
+            StateMachine();
         }
 
         private void OpenDebugWindow_Click(object sender, RoutedEventArgs e) => OpenDebugWindow();
@@ -239,11 +229,10 @@ namespace floorgame
 
         private void MainWindow_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.F) // Check if the 'F' key is pressed
+            if (e.Key == Key.F)
             {
-                CaptureUserPosition(); // Call the function to capture the user's position
+                CaptureUserPosition();
             }
         }
-
     }
 }

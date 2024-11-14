@@ -11,13 +11,11 @@ namespace floorgame
     {
         private KinectSensor kinectSensor;
         private SkeletonPoint lastSkeletonPosition;
-        private SkeletonPoint smoothedSkeletonPosition;
         private Point last2DPosition;
-        private const float MovementThreshold = 0.05f; // Threshold for detecting actual movement (adjust as needed)
-        private const float SmoothingFactor = 0.2f; // Factor for smoothing the position (0.0 to 1.0)
+        private const float MovementThreshold = 0.05f;
+        private const float SmoothingFactor = 0.2f;
 
         public event Action<Skeleton> SkeletonUpdated;
-        public event Action<SkeletonPoint> SkeletonPositionUpdated;
 
         public TrackUserPosition(KinectSensor sensor)
         {
@@ -39,46 +37,20 @@ namespace floorgame
                 Skeleton[] skeletons = new Skeleton[skeletonFrame.SkeletonArrayLength];
                 skeletonFrame.CopySkeletonDataTo(skeletons);
 
-                Skeleton trackedSkeleton = Array.Find(skeletons, s => s.TrackingState == SkeletonTrackingState.Tracked);
-                if (trackedSkeleton != null)
+                foreach (Skeleton skeleton in skeletons)
                 {
-                    SkeletonUpdated?.Invoke(trackedSkeleton);
-
-                    if (IsMovementSignificant(trackedSkeleton.Position))
+                    if (skeleton.TrackingState == SkeletonTrackingState.Tracked)
                     {
-                        smoothedSkeletonPosition = SmoothPosition(trackedSkeleton.Position);
-                        lastSkeletonPosition = smoothedSkeletonPosition;
-                        SkeletonPositionUpdated?.Invoke(smoothedSkeletonPosition);
+                        lastSkeletonPosition = skeleton.Position;
+                        SkeletonUpdated?.Invoke(skeleton);
                     }
                 }
             }
         }
 
-        private bool IsMovementSignificant(SkeletonPoint currentPosition)
-        {
-            // Calculate the distance between the current position and the last position
-            float distance = (float)Math.Sqrt(
-                Math.Pow(currentPosition.X - lastSkeletonPosition.X, 2) +
-                Math.Pow(currentPosition.Y - lastSkeletonPosition.Y, 2) +
-                Math.Pow(currentPosition.Z - lastSkeletonPosition.Z, 2)
-            );
-
-            return distance >= MovementThreshold;
-        }
-
-        private SkeletonPoint SmoothPosition(SkeletonPoint currentPosition)
-        {
-            // Smooth the position by averaging the previous smoothed position with the current position
-            smoothedSkeletonPosition.X = smoothedSkeletonPosition.X + SmoothingFactor * (currentPosition.X - smoothedSkeletonPosition.X);
-            smoothedSkeletonPosition.Y = smoothedSkeletonPosition.Y + SmoothingFactor * (currentPosition.Y - smoothedSkeletonPosition.Y);
-            smoothedSkeletonPosition.Z = smoothedSkeletonPosition.Z + SmoothingFactor * (currentPosition.Z - smoothedSkeletonPosition.Z);
-
-            return smoothedSkeletonPosition;
-        }
-
         public SkeletonPoint GetLastSkeletonPosition()
         {
-            return smoothedSkeletonPosition;
+            return lastSkeletonPosition;
         }
 
         public void StopTracking()
