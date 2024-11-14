@@ -29,7 +29,7 @@ namespace floorgame
             DepthImage.Source = depthInputViewer.DepthImageSource;
 
             // Initialize user tracker for skeleton overlay
-            TrackUserPosition userTracker = new TrackUserPosition(kinectSensor);
+            TrackUserPosition userTracker = new TrackUserPosition(kinectSensor); //Dependency injection?
             userTracker.SkeletonUpdated += DrawSkeleton;
 
             // Initialize SkeletonOverlay

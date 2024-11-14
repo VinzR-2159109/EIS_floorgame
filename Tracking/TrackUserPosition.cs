@@ -1,5 +1,4 @@
 ﻿using Microsoft.Kinect;
-using Microsoft.Samples.Kinect.ControlsBasics;
 using System;
 using System.Linq;
 using System.Windows;
@@ -11,9 +10,6 @@ namespace floorgame
     {
         private KinectSensor kinectSensor;
         private SkeletonPoint lastSkeletonPosition;
-        private Point last2DPosition;
-        private const float MovementThreshold = 0.05f;
-        private const float SmoothingFactor = 0.2f;
 
         public event Action<Skeleton> SkeletonUpdated;
 

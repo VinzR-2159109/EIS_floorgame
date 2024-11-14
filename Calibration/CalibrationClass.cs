@@ -6,9 +6,9 @@ using System.Text;
 using System.Windows;
 using System.Windows.Media.Media3D;
 
-namespace Microsoft.Samples.Kinect.ControlsBasics
+namespace floorgame.Calibration
 {
-    class CalibrationClass
+    public class CalibrationClass
     {
         private KinectSensor m_kinectSensor = null;
         
@@ -31,6 +31,21 @@ namespace Microsoft.Samples.Kinect.ControlsBasics
             }
             m_skeletonCalibPoints.Insert(index, SkeletonPoint);
             m_calibPoints.Insert(index, Calibpoint);
+        }
+
+        public void CaptureUserPosition(SkeletonPoint SkeletonPoint, Point CalibPoint, int Index)
+        {
+            if (SkeletonPoint != null)
+            {
+                try
+                {
+                    SetCalibPointsAtIndex(SkeletonPoint, CalibPoint, Index);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                };
+            }
         }
 
         public void Calibrate()

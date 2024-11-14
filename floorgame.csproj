@@ -60,6 +60,7 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -78,16 +79,39 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ColorInput.cs" />
+    <Compile Include="Calibration\CalibrationHandler.cs" />
+    <Compile Include="Calibration\CalibrationView.xaml.cs">
+      <DependentUpon>CalibrationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Games\Pong\Pong.xaml.cs">
+      <DependentUpon>Pong.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Input\ColorInput.cs" />
     <Compile Include="DebugWindow.xaml.cs">
       <DependentUpon>DebugWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DepthInput.cs" />
-    <Compile Include="SkeletonOverlay.cs" />
-    <Compile Include="TrackUserPosition.cs" />
-    <Compile Include="User.cs" />
-    <Compile Include="Util.cs" />
+    <Compile Include="Input\DepthInput.cs" />
+    <Compile Include="MainMenu\MainMenu.xaml.cs">
+      <DependentUpon>MainMenu.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tracking\SkeletonOverlay.cs" />
+    <Compile Include="Tracking\TrackUserPosition.cs" />
+    <Compile Include="User\User.cs" />
+    <Compile Include="User\UserHandler.cs" />
+    <Compile Include="Calibration\Util.cs" />
+    <Page Include="Calibration\CalibrationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="DebugWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Games\Pong\Pong.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainMenu\MainMenu.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -105,7 +129,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CalibrationClass.cs" />
+    <Compile Include="Calibration\CalibrationClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -131,6 +155,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\pong.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\Emgu.CV.runtime.windows.4.4.0.4099\build\Emgu.CV.runtime.windows.targets" Condition="Exists('packages\Emgu.CV.runtime.windows.4.4.0.4099\build\Emgu.CV.runtime.windows.targets')" />
