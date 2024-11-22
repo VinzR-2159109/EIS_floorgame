@@ -1,25 +1,28 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.11.35327.3
+VisualStudioVersion = 17.12.35514.174 d17.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "floorgame", "floorgame.csproj", "{C54EFBC6-8309-43EB-884E-149A0242BA54}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FloorGame", "FloorGame\FloorGame.csproj", "{0F2F27F6-3B2F-420E-AA13-8DAE0681438F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
 		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C54EFBC6-8309-43EB-884E-149A0242BA54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C54EFBC6-8309-43EB-884E-149A0242BA54}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C54EFBC6-8309-43EB-884E-149A0242BA54}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C54EFBC6-8309-43EB-884E-149A0242BA54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F2F27F6-3B2F-420E-AA13-8DAE0681438F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F2F27F6-3B2F-420E-AA13-8DAE0681438F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F2F27F6-3B2F-420E-AA13-8DAE0681438F}.Debug|x64.ActiveCfg = Debug|x64
+		{0F2F27F6-3B2F-420E-AA13-8DAE0681438F}.Debug|x64.Build.0 = Debug|x64
+		{0F2F27F6-3B2F-420E-AA13-8DAE0681438F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F2F27F6-3B2F-420E-AA13-8DAE0681438F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F2F27F6-3B2F-420E-AA13-8DAE0681438F}.Release|x64.ActiveCfg = Release|x64
+		{0F2F27F6-3B2F-420E-AA13-8DAE0681438F}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {4D9450B4-6E97-47CB-BD4F-7B94F6BE5CE1}
 	EndGlobalSection
 EndGlobal
