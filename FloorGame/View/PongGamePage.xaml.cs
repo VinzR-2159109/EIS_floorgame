@@ -9,7 +9,7 @@ using System.Windows.Threading;
 
 namespace FloorGame.View;
 
-public partial class PongPage : Page
+public partial class PongGamePage : Page
 {
     private DispatcherTimer _updateTimer;
     private PlayerHandler _playerHandler;
@@ -18,7 +18,7 @@ public partial class PongPage : Page
     private int leftScore = 0;
     private int rightScore = 0;
 
-    public PongPage(KinectSensor kinectSensor, CalibrationClass.CalibrationData calibrationData)
+    public PongGamePage(KinectSensor kinectSensor, CalibrationClass.CalibrationData calibrationData)
     {
         InitializeComponent();
 
@@ -31,7 +31,7 @@ public partial class PongPage : Page
         _updateTimer.Start();
     }
 
-    ~PongPage()
+    ~PongGamePage()
     {
         _updateTimer.Stop();
         _updateTimer.Tick -= Update;

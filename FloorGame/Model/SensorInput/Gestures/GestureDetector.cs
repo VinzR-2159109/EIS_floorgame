@@ -19,6 +19,7 @@ public class GestureDetector
     private SkeletonTracker _skeletonTracker;
 
     public event Action<Skeleton>? OnGestureDetected;
+    public GesturePartResult CurrentState {  get; private set; }
 
     public GestureDetector(KinectSensor kinectSensor, int windowSize, IGestureSegment[] segments)
     {
@@ -34,6 +35,7 @@ public class GestureDetector
     private void Update(Skeleton skeleton)
     {
         GesturePartResult result = _segments[_currentSegment].Update(skeleton);
+        CurrentState = result;
         if (result == GesturePartResult.Succeeded)
         {
             if (_currentSegment + 1 < _segments.Length)

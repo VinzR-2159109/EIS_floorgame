@@ -13,6 +13,7 @@ public partial class MainMenuPage : Page
     private WaveGestureDetector _waveGestureDetector;
 
     public event Action? OnStartPongGame;
+    public event Action? OnStartColorMatchGame;
     public event Action? Quit;
 
     public MainMenuPage(KinectSensor kinectSensor, CalibrationClass.CalibrationData calibrationData)
@@ -32,6 +33,7 @@ public partial class MainMenuPage : Page
         if (player == null) return;
 
         if (IsPongGameOverlap(player.ImagePosition)) OnStartPongGame?.Invoke();
+        if (IsColorMatchGameOverlap(player.ImagePosition)) OnStartColorMatchGame?.Invoke();
     }
 
     private bool IsPongGameOverlap(Point point)
@@ -40,6 +42,15 @@ public partial class MainMenuPage : Page
         Rect pongGameRect = new Rect(pongGamePosition.X, pongGamePosition.Y, Game_1.Width, Game_1.Height);
 
         if (pongGameRect.Contains(point)) return true;
+        return false;
+    }
+
+    private bool IsColorMatchGameOverlap(Point point)
+    {
+        Point colorMatchGamePosition = Game_2.TransformToVisual(playerArea.PlayerWalkCanvas).Transform(new Point(0, 0));
+        Rect colorMatchGameRect = new Rect(colorMatchGamePosition.X, colorMatchGamePosition.Y, Game_1.Width, Game_1.Height);
+
+        if (colorMatchGameRect.Contains(point)) return true;
         return false;
     }
 }

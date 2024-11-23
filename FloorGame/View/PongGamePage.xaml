@@ -1,4 +1,4 @@
-﻿<Page x:Class="FloorGame.View.PongPage"
+﻿<Page x:Class="FloorGame.View.PongGamePage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 

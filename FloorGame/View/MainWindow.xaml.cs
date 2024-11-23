@@ -10,7 +10,6 @@ public partial class MainWindow : Window
     private KinectSensor _kinectSensor;
     private CalibrationPage _calibrationPage;
     private MainMenuPage? _mainMenuPage;
-    private PongPage? _pongPage;
 
     public MainWindow()
     {
@@ -26,10 +25,9 @@ public partial class MainWindow : Window
 
     private void InitPages(KinectSensor kinectSensor, CalibrationClass.CalibrationData calibrationData)
     {
-        _pongPage = new PongPage(kinectSensor, calibrationData);
-
         _mainMenuPage = new MainMenuPage(kinectSensor, calibrationData);
-        _mainMenuPage.OnStartPongGame += () => { mainFrame.Navigate(_pongPage); };
+        _mainMenuPage.OnStartPongGame += () => { mainFrame.Navigate(new PongGamePage(kinectSensor, calibrationData)); };
+        _mainMenuPage.OnStartColorMatchGame += () => { mainFrame.Navigate(new ColorMatchGamePage(kinectSensor, calibrationData)); };
 
         mainFrame.Navigate(_mainMenuPage);       
     }

@@ -2,6 +2,7 @@
 using FloorGame.Model.SensorInput;
 using Microsoft.Kinect;
 using System.Windows;
+using System.Windows.Media;
 
 namespace FloorGame.Model.Player;
 
@@ -9,16 +10,25 @@ public class Player
 {
     public Point ImagePosition { get; private set; }
     public SkeletonPoint SkeletonPosition { get; private set; }
+    public Skeleton? Skeleton {  get; private set; }
 
-    public Player(int trackingID)
+    public Color PlayerColor { get; private set; }
+    public Color FillColor { get; set; }
+
+    public int Lives {  get; set; }
+
+    public Player(Color color)
     {
-
+        PlayerColor = color;
+        FillColor = Color.FromRgb(0, 0, 0);
+        Lives = 30;
     }
 
-    public void SetPosition(Point imagePosition, SkeletonPoint skeletonPosition)
+    public void SetPosition(Point imagePosition, SkeletonPoint skeletonPosition, Skeleton skeleton)
     {
         this.ImagePosition = imagePosition;
         this.SkeletonPosition = skeletonPosition;
+        this.Skeleton = skeleton;
     }
 }
 
@@ -53,7 +63,15 @@ public class PlayerHandler
     private void UpdatePlayerPosition(Skeleton skeleton)
     {
         if (skeleton == null) return;
-        if (!_players.ContainsKey(skeleton.TrackingId)) AddPlayer(new Player(skeleton.TrackingId), skeleton.TrackingId);
-        _players[skeleton.TrackingId].SetPosition(_calibrationClass.kinectToProjectionPoint(skeleton.Joints[JointType.Spine].Position), skeleton.Joints[JointType.Spine].Position);
+        if (!_players.ContainsKey(skeleton.TrackingId)) 
+        {
+            Random rand = new Random();
+            byte r = (byte)rand.Next(0, 256);
+            byte g = (byte)rand.Next(0, 256);
+            byte b = (byte)rand.Next(0, 256);
+
+            AddPlayer(new Player(Color.FromRgb(r, g, b)), skeleton.TrackingId); 
+        }
+        _players[skeleton.TrackingId].SetPosition(_calibrationClass.kinectToProjectionPoint(skeleton.Joints[JointType.Spine].Position), skeleton.Joints[JointType.Spine].Position, skeleton);
     }
 }
