@@ -48,6 +48,7 @@ public partial class ColorMatchGamePage : Page
         _model.OnTilesChanged += UpdateTiles;
         _model.OnTileChanged += UpdateTile;
         _model.OnPlayerChanged += UpdatePlayer;
+        _model.OnPlayerLost += OnPlayerLost;
     }
 
     private void UpdateTiles(ColorMatchGame.Tile[,] tiles)
@@ -66,6 +67,15 @@ public partial class ColorMatchGamePage : Page
     private void UpdatePlayer(Player player, ColorMatchGame.HandState handState)
     {
         player.FillColor = _playerStateColors[handState];
+    }
+
+    private void OnPlayerLost(Player[] players, Player lostPlayer)
+    {
+        string names = "";
+        for (int i = 0; i < players.Length; i++)
+            if (players[i] != lostPlayer) names += $"Player {i}, ";
+
+        gameEndFrame.Navigate(new WinnerPage(names));
     }
 
     private void GenerateBoard(Canvas canvas, int tileCount)

@@ -11,5 +11,6 @@
     <Grid>
         <Canvas Name="boardCanvas" Background="Transparent" Height="720" Width="1280" VerticalAlignment="Center" HorizontalAlignment="Center"/>
         <local:WalkableAreaUserControl x:Name="playerArea"/>
+        <Frame Name="gameEndFrame"/>
     </Grid>
 </Page>

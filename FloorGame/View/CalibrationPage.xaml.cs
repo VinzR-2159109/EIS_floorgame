@@ -6,6 +6,7 @@ using System.Windows.Shapes;
 using System.Windows.Media;
 using FloorGame.Model.SensorInput;
 using FloorGame.Model.SensorInput.Gestures;
+using System.Diagnostics;
 
 namespace FloorGame.View;
 
@@ -14,7 +15,8 @@ public partial class CalibrationPage : Page
     private CalibrationHandler _calibrationHandler;
     private KinectSensor _kinectSensor;
 
-    private WaveGestureDetector _waveGestureDetector;
+    private LeftWaveGestureDetector _leftWaveGestureDetector;
+    private RightWaveGestureDetector _rightWaveGestureDetector;
 
     public event Action<CalibrationClass.CalibrationData>? OnCalibrated;
 
@@ -26,21 +28,28 @@ public partial class CalibrationPage : Page
 
         this.Focusable = true;
         this.Focus();
-
         _calibrationHandler = new CalibrationHandler(kinectSensor, playerArea.PlayerWalkCanvas.Width, playerArea.PlayerWalkCanvas.Height);
-        _calibrationHandler.OnCalibrationStateChanged += UpdateCalibrationState;
 
         colorImage.Source = new ColorImage(kinectSensor).Image;
         new SkeletonImage(kinectSensor, skeletonOverlayCanvas);
 
-        _waveGestureDetector = new WaveGestureDetector(kinectSensor);
-        _waveGestureDetector.OnGestureDetected += _calibrationHandler.SetNextCalibrationPoint;
-
+        _leftWaveGestureDetector = new LeftWaveGestureDetector(kinectSensor);
+        _rightWaveGestureDetector = new RightWaveGestureDetector(kinectSensor);
+        Start();
         _calibrationHandler.StartCalibration();
     }
 
-    ~CalibrationPage()
+    public void Start()
     {
+        _leftWaveGestureDetector.OnGestureDetected += _calibrationHandler.SetNextCalibrationPoint;
+        _rightWaveGestureDetector.OnGestureDetected += _calibrationHandler.SetNextCalibrationPoint;
+        _calibrationHandler.OnCalibrationStateChanged += UpdateCalibrationState;
+    }
+
+    public void Stop()
+    {
+        _leftWaveGestureDetector.OnGestureDetected -= _calibrationHandler.SetNextCalibrationPoint;
+        _rightWaveGestureDetector.OnGestureDetected -= _calibrationHandler.SetNextCalibrationPoint;
         _calibrationHandler.OnCalibrationStateChanged -= UpdateCalibrationState;
     }
 

@@ -18,7 +18,7 @@ public partial class MainWindow : Window
         _kinectSensor = ConnectKinectSensor();
 
         _calibrationPage = new CalibrationPage(_kinectSensor);
-        _calibrationPage.OnCalibrated += (CalibrationClass.CalibrationData data) => { InitPages(_kinectSensor, data); };
+        _calibrationPage.OnCalibrated += (CalibrationClass.CalibrationData data) => { InitPages(_kinectSensor, data); _calibrationPage.Stop(); };
 
         mainFrame.Navigate(_calibrationPage);
     }
@@ -26,9 +26,10 @@ public partial class MainWindow : Window
     private void InitPages(KinectSensor kinectSensor, CalibrationClass.CalibrationData calibrationData)
     {
         _mainMenuPage = new MainMenuPage(kinectSensor, calibrationData);
-        _mainMenuPage.OnStartPongGame += () => { mainFrame.Navigate(new PongGamePage(kinectSensor, calibrationData)); };
-        _mainMenuPage.OnStartColorMatchGame += () => { mainFrame.Navigate(new ColorMatchGamePage(kinectSensor, calibrationData)); };
+        _mainMenuPage.OnStartPongGame += () => { mainFrame.Navigate(new PongGamePage(kinectSensor, calibrationData)); _mainMenuPage.Stop(); };
+        _mainMenuPage.OnStartColorMatchGame += () => { mainFrame.Navigate(new ColorMatchGamePage(kinectSensor, calibrationData)); _mainMenuPage.Stop(); };
 
+        _mainMenuPage.Start();
         mainFrame.Navigate(_mainMenuPage);       
     }
 

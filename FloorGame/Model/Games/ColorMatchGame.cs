@@ -62,6 +62,7 @@ public class ColorMatchGame
     public event Action<Tile[,]>? OnTilesChanged;
     public event Action<Tile>? OnTileChanged;
     public event Action<Player.Player, HandState>? OnPlayerChanged;
+    public event Action<Player.Player[], Player.Player>? OnPlayerLost;
 
     public ColorMatchGame(KinectSensor kinectSensor, CalibrationClass.CalibrationData calibrationData, PlayerHandler playerHandler, (double, double) playerAreaSize)
     {
@@ -132,6 +133,8 @@ public class ColorMatchGame
     {
         tile.SetState(Tile.TileState.FREE, 20);
         player.Lives--;
+
+        if (player.Lives == 0) OnPlayerLost?.Invoke(_playerHandler.Players, player);
 
         OnTileChanged?.Invoke(tile);
     }

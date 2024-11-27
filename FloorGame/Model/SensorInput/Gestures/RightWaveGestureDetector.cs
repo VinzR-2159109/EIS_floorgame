@@ -3,7 +3,7 @@ using Microsoft.Kinect;
 
 namespace FloorGame.Model.SensorInput.Gestures;
 
-public class WaveGestureDetector : GestureDetector
+public class RightWaveGestureDetector : GestureDetector
 {
     private class WaveSegment1 : IGestureSegment
     {
@@ -49,7 +49,7 @@ public class WaveGestureDetector : GestureDetector
         }
     }
 
-    public WaveGestureDetector(KinectSensor kinectSensor) : base(
+    public RightWaveGestureDetector(KinectSensor kinectSensor) : base(
         kinectSensor,
         50,
         new IGestureSegment[] { 

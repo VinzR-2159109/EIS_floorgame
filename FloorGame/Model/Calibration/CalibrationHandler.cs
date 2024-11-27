@@ -1,5 +1,6 @@
 ﻿using FloorGame.Model.SensorInput;
 using Microsoft.Kinect;
+using System.Diagnostics;
 using System.Windows;
 
 namespace FloorGame.Model.Calibration;

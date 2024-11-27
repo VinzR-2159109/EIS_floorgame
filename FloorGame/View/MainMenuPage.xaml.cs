@@ -10,7 +10,8 @@ namespace FloorGame.View;
 
 public partial class MainMenuPage : Page
 {
-    private WaveGestureDetector _waveGestureDetector;
+    private RightWaveGestureDetector _rightWaveGestureDetector;
+    private LeftWaveGestureDetector _leftWaveGestureDetector;
 
     public event Action? OnStartPongGame;
     public event Action? OnStartColorMatchGame;
@@ -20,10 +21,20 @@ public partial class MainMenuPage : Page
     {
         InitializeComponent();
 
-        _waveGestureDetector = new WaveGestureDetector(kinectSensor);
-        _waveGestureDetector.OnGestureDetected += OnWave;
-
+        _leftWaveGestureDetector = new LeftWaveGestureDetector(kinectSensor);
+        _rightWaveGestureDetector = new RightWaveGestureDetector(kinectSensor);
         playerArea.Init(kinectSensor, calibrationData);
+    }
+
+    public void Start()
+    {
+        _leftWaveGestureDetector.OnGestureDetected += OnWave;
+        _rightWaveGestureDetector.OnGestureDetected += OnWave;
+    }
+    public void Stop()
+    {
+        _leftWaveGestureDetector.OnGestureDetected -= OnWave;
+        _rightWaveGestureDetector.OnGestureDetected -= OnWave;
     }
 
     private void OnWave(Skeleton skeleton)

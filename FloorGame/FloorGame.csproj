@@ -11,7 +11,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="resources\Images\floor_is_lava.png" />
     <None Remove="resources\Images\pong.png" />
+    <None Remove="resources\Images\winner_background.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,7 +27,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="resources\Images\floor_is_lava.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="resources\Images\pong.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="resources\Images\winner_background.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>

@@ -7,6 +7,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="720" d:DesignWidth="1280">
     <Grid>
-        <Canvas Name="walkableArea" Background="Transparent" Height="720" Width="1280" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <Canvas Name="walkableArea" Background="Transparent" Height="900" Width="1750" VerticalAlignment="Center" HorizontalAlignment="Center"/>
     </Grid>
 </UserControl>

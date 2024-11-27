@@ -10,13 +10,13 @@
 
     <Canvas x:Name="GameCanvas" Background="White">
         <!-- Left Paddle -->
-        <Rectangle x:Name="LeftPaddle" Width="20" Height="100" Fill="Black" Canvas.Left="30" Canvas.Top="150" />
+        <Rectangle x:Name="LeftPaddle" Width="40" Height="200" Fill="Black" Canvas.Left="330" Canvas.Top="150" />
 
         <!-- Right Paddle -->
-        <Rectangle x:Name="RightPaddle" Width="20" Height="100" Fill="Black" Canvas.Left="750" Canvas.Top="150" />
+        <Rectangle x:Name="RightPaddle" Width="40" Height="200" Fill="Black" Canvas.Left="1530" Canvas.Top="150" />
 
         <!-- Ball -->
-        <Ellipse x:Name="Ball" Width="20" Height="20" Fill="Black" Canvas.Left="390" Canvas.Top="215" />
+        <Ellipse x:Name="Ball" Width="30" Height="30" Fill="Black" Canvas.Left="390" Canvas.Top="215" />
 
         <!-- Score Texts -->
         <TextBlock x:Name="LeftScore" Text="0" FontSize="30" Foreground="Black" Canvas.Left="300" Canvas.Top="10" />

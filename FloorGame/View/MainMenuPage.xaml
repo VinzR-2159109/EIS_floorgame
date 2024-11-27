@@ -16,13 +16,8 @@
             </StackPanel>
 
             <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
-                <Image Name="Game_2" Width="200" Height="200" Margin="10"/>
+                <Image Name="Game_2" Source="pack://application:,,,/Resources/Images/floor_is_lava.png" Width="200" Height="200" Margin="10"/>
                 <TextBlock Text="Game 2" HorizontalAlignment="Center" FontSize="16" Margin="0,5,0,0"/>
-            </StackPanel>
-
-            <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
-                <Image Name="Game_3" Width="200" Height="200" Margin="10"/>
-                <TextBlock Text="Game 3" HorizontalAlignment="Center" FontSize="16" Margin="0,5,0,0"/>
             </StackPanel>
         </StackPanel>
 
