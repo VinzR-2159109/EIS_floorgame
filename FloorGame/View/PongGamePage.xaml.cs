@@ -39,13 +39,48 @@ public partial class PongGamePage : Page
 
     private void Update(object? sender, EventArgs e)
     {
-        UpdatePaddlePositions(_playerHandler.Players[0].ImagePosition, isLeftPaddle: true);
-        UpdatePaddlePositions(_playerHandler.Players[1].ImagePosition, isLeftPaddle: false);
-        
+        if (_playerHandler.Players.Count >= 1)
+        {
+            AssignPaddleControl();
+        }
         GameLoop();
     }
 
-    private void UpdatePaddlePositions(Point playerPoint, bool isLeftPaddle)
+    private void AssignPaddleControl()
+    {
+        Player? leftPaddlePlayer = null;
+        Player? rightPaddlePlayer = null;
+        double leftPaddleX = Canvas.GetLeft(LeftPaddle);
+        double rightPaddleX = Canvas.GetLeft(RightPaddle);
+
+        foreach (var player in _playerHandler.Players)
+        {
+            double distanceToLeft = Math.Abs(player.ImagePosition.X - leftPaddleX);
+            double distanceToRight = Math.Abs(player.ImagePosition.X - rightPaddleX);
+
+            if (leftPaddlePlayer == null || distanceToLeft < Math.Abs(leftPaddlePlayer.ImagePosition.X - leftPaddleX))
+            {
+                leftPaddlePlayer = player;
+            }
+
+            if (rightPaddlePlayer == null || distanceToRight < Math.Abs(rightPaddlePlayer.ImagePosition.X - rightPaddleX))
+            {
+                rightPaddlePlayer = player;
+            }
+        }
+
+        if (leftPaddlePlayer != null)
+        {
+            UpdatePaddlePosition(leftPaddlePlayer.ImagePosition, isLeftPaddle: true);
+        }
+
+        if (rightPaddlePlayer != null)
+        {
+            UpdatePaddlePosition(rightPaddlePlayer.ImagePosition, isLeftPaddle: false);
+        }
+    }
+
+    private void UpdatePaddlePosition(Point playerPoint, bool isLeftPaddle)
     {
         double yPosition = Math.Max(0, Math.Min(GameCanvas.ActualHeight - LeftPaddle.Height, playerPoint.Y));
 
