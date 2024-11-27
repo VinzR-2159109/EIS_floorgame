@@ -1,0 +1,26 @@
+﻿<Page x:Class="FloorGame.View.MainMenuPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:FloorGame.View"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="MainMenuPage">
+
+    <Grid>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                <Image Name="Game_1" Source="pack://application:,,,/Resources/Images/pong.png" Width="200" Height="200" Margin="10"/>
+                <TextBlock Text="Pong" HorizontalAlignment="Center" FontSize="16" Margin="0,5,0,0"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                <Image Name="Game_2" Source="pack://application:,,,/Resources/Images/floor_is_lava.png" Width="200" Height="200" Margin="10"/>
+                <TextBlock Text="Game 2" HorizontalAlignment="Center" FontSize="16" Margin="0,5,0,0"/>
+            </StackPanel>
+        </StackPanel>
+
+        <local:WalkableAreaUserControl x:Name="playerArea"/>
+    </Grid>
+</Page>
