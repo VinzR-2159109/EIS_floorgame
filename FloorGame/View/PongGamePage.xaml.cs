@@ -104,12 +104,15 @@ public partial class PongGamePage : Page
             _ballVelocity.Y = -_ballVelocity.Y;
         }
 
+        const double speedIncreaseFactor = 1.05; // Factor to increase ball speed on paddle hit
+
         // Left paddle:
         if (ballX <= Canvas.GetLeft(LeftPaddle) + LeftPaddle.Width &&
             ballY + Ball.Height >= Canvas.GetTop(LeftPaddle) &&
             ballY <= Canvas.GetTop(LeftPaddle) + LeftPaddle.Height)
         {
             _ballVelocity.X = -_ballVelocity.X;
+            _ballVelocity *= speedIncreaseFactor; // Increase speed
         }
 
         // Right paddle:
@@ -118,6 +121,7 @@ public partial class PongGamePage : Page
             ballY <= Canvas.GetTop(RightPaddle) + RightPaddle.Height)
         {
             _ballVelocity.X = -_ballVelocity.X;
+            _ballVelocity *= speedIncreaseFactor; // Increase speed
         }
 
         Canvas.SetLeft(Ball, ballX);
@@ -136,6 +140,7 @@ public partial class PongGamePage : Page
             ResetBall();
         }
     }
+
 
     private void ResetBall()
     {
