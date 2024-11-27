@@ -39,15 +39,24 @@ public partial class PongGamePage : Page
 
     private void Update(object? sender, EventArgs e)
     {
-        foreach (Player player in _playerHandler.Players) UpdatePaddlePositions(player.ImagePosition);
+        UpdatePaddlePositions(_playerHandler.Players[0].ImagePosition, isLeftPaddle: true);
+        UpdatePaddlePositions(_playerHandler.Players[1].ImagePosition, isLeftPaddle: false);
+        
         GameLoop();
     }
 
-    private void UpdatePaddlePositions(Point playerPoint)
+    private void UpdatePaddlePositions(Point playerPoint, bool isLeftPaddle)
     {
         double yPosition = Math.Max(0, Math.Min(GameCanvas.ActualHeight - LeftPaddle.Height, playerPoint.Y));
-        Canvas.SetTop(LeftPaddle, yPosition);
-        Canvas.SetTop(RightPaddle, yPosition);
+
+        if (isLeftPaddle)
+        {
+            Canvas.SetTop(LeftPaddle, yPosition);
+        }
+        else
+        {
+            Canvas.SetTop(RightPaddle, yPosition);
+        }
     }
 
     private void GameLoop()
