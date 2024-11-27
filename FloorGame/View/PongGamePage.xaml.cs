@@ -39,7 +39,7 @@ public partial class PongGamePage : Page
 
     private void Update(object? sender, EventArgs e)
     {
-        if (_playerHandler.Players.Count >= 1)
+        if (_playerHandler.Players.Length >= 1)
         {
             AssignPaddleControl();
         }
